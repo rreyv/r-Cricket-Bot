@@ -11,7 +11,7 @@ from emailGlobals import sendEmail
 
 
 def MakeRedditTable(fixturesData,r,subreddit):
-	table="Upcoming Matches:\n\nMatch|Time Left\n:---|:---\n"	#begin table.
+	table="Upcoming International Fixtures:\n\nMatch|Time Left\n:---|:---\n"	#begin table.
 	for i in fixturesData:
 		matchTime = fixturesData[i]['Time']	#get match time
 		currentGMT = datetime.utcnow()	#get UTC time
@@ -39,15 +39,15 @@ def MakeRedditTable(fixturesData,r,subreddit):
 			table=table+DisplayText+"|"+"[Live!]("+fixturesData[i]['Link']+")"+"\n" #if we do, add it to the match table
 		else:
 			table=table+DisplayText+"|"+"Live!"+"\n" #no match link, no link in the sidebar table
-	table=table+"\n[More Fixtures](http://www.espncricinfo.com/ci/content/match/fixtures/index.html?days=30)"	#end of table. This is what the EndOfTableMarker searches for
+	table=table+"\n[More International Fixtures](http://www.espncricinfo.com/ci/content/match/fixtures/index.html?days=30)."	#end of table. This is what the EndOfTableMarker searches for
 	return table
 
 
 
 def updateSidebar(fixturesData,r,subredditName):
 	newTable=MakeRedditTable(fixturesData,r,subredditName)
-	EndOfTableMarker="[More Fixtures](http://www.espncricinfo.com/ci/content/match/fixtures/index.html?days=30)" #Signature to look for that marks the end of table
-	BeginningOfTableMarker="Upcoming Matches:"	#Signature to look for that marks beginning of table
+	EndOfTableMarker="[More International Fixtures](http://www.espncricinfo.com/ci/content/match/fixtures/index.html?days=30)." #Signature to look for that marks the end of table
+	BeginningOfTableMarker="Upcoming International Fixtures:"	#Signature to look for that marks beginning of table
 	try:
 		settings=r.get_settings(subredditName)
 		description=settings['description']

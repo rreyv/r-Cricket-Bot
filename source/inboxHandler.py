@@ -11,7 +11,7 @@ from socket import timeout
 import sqlite3 as sql
 from emailGlobals import sendEmail
 
-def readInbox(r):
+def readInbox(r,subreddit):
 	Moderators=['sunnydelish','TheAshes','jack47','EyesAllOnFire','ingreenheaven','rreyv']
 	#approvedUpdaters=['rreyv','sunnydelish']
 	try:
@@ -36,7 +36,7 @@ def readInbox(r):
 					else:
 						replyText="Only moderators can use this command."
 				elif msgSubject.lower()=="create thread":
-					replyText=CreateThread(r,message)
+					replyText=CreateThread(r,message,subreddit)
 				elif ((msgSubject.find('reddit.com')!=-1) or (msgSubject.find('redd.it')!=-1)):
 					replyText=UpdateThread(r,message)
 				else:
@@ -48,11 +48,11 @@ def readInbox(r):
 		#sendEmail("We've got a problem","Couldn't read inbox")
 
 
-def CreateThread(r,message):
+def CreateThread(r,message,subreddit):
 	msgSubject=str(message.subject)
 	msgAuthor=str(message.author)
 	msgBody=str(message.body)
-	Result,returnText=createMatchThreadWrapper(r,None,msgBody,msgAuthor,'rreyv')
+	Result,returnText=createMatchThreadWrapper(r,None,msgBody,msgAuthor,subreddit)
 	return returnText
 
 
@@ -163,31 +163,3 @@ def UpdateThread(r,message):
 	else:
 		returnText="Sorry, only moderator approved users can update match threads. Please contact the moderators of /r/cricket to get approved."
 	return returnText
-
-
-    #     if ((message.was_comment==False) and (msgAuthor in approvedUpdaters) and (msgSubject.find('reddit.com')!=-1)):
-    #         submission=r.get_submission(msgSubject)
-    #         selfText=submission.selftext
-    #         selfText=selfText+"\n\n"
-    #         selfText=selfText+"\n**/u/"+msgAuthor+" says:**\n"
-    #         selfText=selfText+msgBody
-    #         #submission.selftext(selfText)
-    #         print selfText
-    #         #setattr(submission,'selftext',selfText)
-    #         submission.edit(selfText)
-    # createMatchThreadWrapper(r,"booga Booga","")
-
-
-# if __name__ == '__main__':
-# 	r = praw.Reddit('/r/cricket sidebar updater bot by /u/rreyv') #reddit stuff
-# 	subredditName='rreyv'
-# 	r.login()
-# 	while True:
-# 		readInbox(r)
-# 		time.sleep(30)
-# 		print "Loop end"
-# 	#returnText=AddUser("a","/u/sunnydelish,/u/rreyv,/u/rreyv123123")
-# 	#returnText=RemoveUser("a","/u/sunnydelish")
-# 	#returnText=ListUsers("a")
-# 	#returnText=UpdateThread(r,'http://www.reddit.com/r/rreyv/comments/1lp9g5/match_thread_2nd_unofficial_test_india_a_v_new/')
-# 	print returnText

@@ -15,8 +15,8 @@ from inboxHandler import readInbox
 
 if __name__=="__main__":
 	#One time setup
-	r = praw.Reddit('/r/cricket sidebar updater and match thread creator bot by /u/rreyv') #reddit stuff
-	subredditName='rreyv'
+	r = praw.Reddit('/r/cricket sidebar updating and match thread creating bot by /u/rreyv. Version 1.0') #reddit stuff
+	subredditName='cricket'
 	r.login() #sign in!
 	fixturesData={}
 	fixturesData=getFixturesDictionary(5)
@@ -27,14 +27,14 @@ if __name__=="__main__":
 	while True:
 		#things that happen every four hours
 		while True:
-			#things that happen every 45 seconds
+			#things that happen every 50 seconds
 			updateSidebar(fixturesData,r,subredditName)
-			readInbox(r)
-			time.sleep(45)
+			readInbox(r,subredditName)
+			time.sleep(50)
 			i+=1;
 			if i%240==0:
 				break
-			#End of 45 second loop
+			#End of 50 second loop
 		fixturesData={}
 		fixturesData=getFixturesDictionary(5)
 		sendEmail("Grabbing fixtures from Cricinfo","Grabbed fixtures from Cricinfo")
