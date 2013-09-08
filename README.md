@@ -27,13 +27,20 @@ Running the bot on your own PC
 * Create the MatchThreads table:
 
     CREATE TABLE "MatchThreads" (
-	    "fixtureId" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	    "threadTitle" TEXT NOT NULL,
-	    "liveThreadLink" TEXT NOT NULL,
-	    "source" TEXT,
-	    "matchThreadLink" TEXT NOT NULL,
-	    "creationTime" TEXT NOT NULL
-	)
+    
+    "fixtureId" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	    
+    "threadTitle" TEXT NOT NULL,
+	    
+    "liveThreadLink" TEXT NOT NULL,
+	    
+    "source" TEXT,
+	    
+    "matchThreadLink" TEXT NOT NULL,
+	    
+    "creationTime" TEXT NOT NULL
+	    
+    )
 
 * Edit startBot.py and ensure you have the right subreddit name
 
