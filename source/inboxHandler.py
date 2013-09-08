@@ -40,7 +40,7 @@ def readInbox(r):
 				elif ((msgSubject.find('reddit.com')!=-1) or (msgSubject.find('redd.it')!=-1)):
 					replyText=UpdateThread(r,message)
 				else:
-					replyText="I'm not sure what you're trying to say. Check out the bot help page [here](https://github.com/rreyv/r-Cricket-Bot)."
+					replyText="I'm not sure what you're trying to say. Check out the bot help page [here](https://github.com/rreyv/r-Cricket-Bot#rcricketbot)."
 				message.reply(replyText)
 	except:
 		print "Error"
