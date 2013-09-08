@@ -94,8 +94,9 @@ def createMatchThreadWrapper(r,threadTitle,liveThreadURL,source,subreddit):
             time.sleep(30)
 
     #By this line, the submission has been edited and we can tell the requestor about it.
-    return [True,"Match thread successfully created. [Here's the link](" + str(submission.url) +")."]
     sendEmail("Started match thread","Created a new match thread"+str(submission.url))
+    return [True,"Match thread successfully created. [Here's the link](" + str(submission.url) +")."]
+    
 
 
 def WeCareAbout(teamName):
