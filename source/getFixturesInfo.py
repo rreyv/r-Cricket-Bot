@@ -33,7 +33,7 @@ def readInternationalFixtures( myurl, ciResults):
     allRows = soup.find_all('tr')
 
     i=0
-    for row in allRows[:300]:
+    for row in allRows[:250]:
         if 'id' in row.attrs:
             rowType = "date"
         elif 'class' in row.attrs:
@@ -84,7 +84,8 @@ def formatColumn ( colData, ciResults,i ):
         dataAfterComma = abbreviateMatchText(dataAfterComma)
 
     matchTextWithoutLocation=team1Abv + " v " + team2Abv + ", " + dataAfterComma
-
+    if data[0].strip()=="-":
+        data[0]="00:00 GMT"
     ciResults[i]['ColumnTitle']=matchTextWithoutLocation
     ciResults[i]['Time']=getTime(data[0],ciResults[i]['Day'])
     ciResults[i]['MatchText']=data[1]
@@ -135,7 +136,10 @@ def getTime(timeString,Day):
     GMT=timeString.split(" | ")[0]
     GMT=timeString.split(" ")[0]
     GMTHour=GMT.split(":")[0]
-    GMTMinutes=GMT.split(":")[1]
+    try:
+        GMTMinutes=GMT.split(":")[1]
+    except:
+        GMTMinutes="00"
     GMTMonth=Day.split(" ")[0].strip()
     GMTDay=Day.split(" ")[1]
     GMTMonth=getMonthNumber(GMTMonth)
@@ -181,7 +185,7 @@ def returnMatchesWeCareAbout(fixturesData,n):
     teamsWeCareAbout = ['Australia', 'England', 'New Zealand', 'Pakistan', 'India', 'South Africa', 'Zimbabwe', 'Bangladesh', 'Ireland', 'West Indies', 'Sri Lanka']
     for i in fixturesData:
         if ((fixturesData[i]['TeamOne'] in teamsWeCareAbout) or (fixturesData[i]['TeamTwo'] in teamsWeCareAbout)):
-            if ((fixturesData[i]['TeamOne'].find("Under-19s")==-1) and (fixturesData[i]['TeamOne'].find("Under-23s")==-1) and (fixturesData[i]['TeamOne'].find("Women")==-1)):
+            if ((fixturesData[i]['TeamOne'].find("Under-19")==-1) and (fixturesData[i]['TeamOne'].find("Under-23")==-1) and (fixturesData[i]['TeamOne'].find("Women")==-1)):
                 fixturesWeCareAbout[j]={}
                 fixturesWeCareAbout[j]=fixturesData[i]
                 j+=1
@@ -193,20 +197,7 @@ def getFixturesDictionary(n):
     fixturesData = {}
     url='http://www.espncricinfo.com/ci/content/match/fixtures/index.html?days=30'
     fixturesData = readInternationalFixtures(url, fixturesData)
-    fixturesData = returnMatchesWeCareAbout(fixturesData,5)
+    fixturesData = returnMatchesWeCareAbout(fixturesData,n)
     return fixturesData
 
 
-
-################################################################################
-# MAIN
-################################################################################
-
-# if __name__=="__main__":
-#     fixturesData = {}
-#     url='http://www.espncricinfo.com/ci/content/match/fixtures/index.html?days=30'
-#     #url='http://www.espncricinfo.com/ci/content/match/fixtures/index.html?days=5&all=1'
-#     fixturesData = readInternationalFixtures(url, fixturesData)
-#     #fixturesData = returnMatchesWeCareAbout(fixturesData,5)
-#     for i in fixturesData:
-#         print(fixturesData[i])

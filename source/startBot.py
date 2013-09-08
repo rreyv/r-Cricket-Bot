@@ -10,91 +10,33 @@ from praw.errors import ExceptionList, APIException, InvalidCaptcha, InvalidUser
 from socket import timeout
 import sqlite3 as sql
 from emailGlobals import sendEmail
+from inboxHandler import readInbox
 
-# if __name__=="__main__":
-# 	msg = MIMEText("Waddup. This is the body")
-# 	msg['Subject'] = 'The contents of this title'
-# 	msg['From'] = 'rcricketbot@gmail.com'
-# 	msg['To'] = 'ravishr224@gmail.com'
-
-# 	s = smtplib.SMTP('smtp.gmail.com', 587)
-# 	s.ehlo()
-# 	s.starttls()
-# 	s.ehlo()
-# 	username=raw_input('Enter username: ')
-# 	pw=raw_input('Enter the password: ')
-# 	s.login(username+'@gmail.com',pw)
-# 	s.sendmail(msg['From'], msg['To'], msg.as_string())
-# 	s.quit()
-
-# def updateSidebar(fixturesData,r,subredditName):
-# 	newTable=MakeRedditTable(fixturesData,r)
-# 	# except blocks stolen from reddit post
-# 	EndOfTableMarker="[More Fixtures](http://www.espncricinfo.com/ci/content/match/fixtures/index.html?days=30)" #Signature to look for that marks the end of table
-# 	BeginningOfTableMarker="Upcoming Matches:"	#Signature to look for that marks beginning of table
-# 	try:
-# 		settings=r.get_settings(subredditName)
-# 		description=settings['description']
-# 		descriptionBegin=description.find(BeginningOfTableMarker)
-# 		descriptionEnd=description.find(EndOfTableMarker) + len(EndOfTableMarker)
-# 		description=description[:descriptionBegin] + newTable + description[descriptionEnd:]
-# 		settings=r.get_subreddit(subredditName).update_settings(description=description)
-# 		timeCounter+=1;
-# 		if (timeCounter%240)==0:
-# 			break
-# 		time.sleep(60)
-# 	except APIException as e:
-# 		time.sleep(30)
-# 	except ExceptionList as el:
-# 		time.sleep(30)
-# 	except (HTTPError, RateLimitExceeded) as e:
-# 		time.sleep(30)
-# 	except timeout:
-# 		time.sleep(30)
-# 	except Exception as e:
-# 		sendEmail(fromUser,fromPass,toUser,"Subject","Text")
-# 		raise
-
-def readInbox(r):
-	pass
 
 if __name__=="__main__":
 	#One time setup
-	r = praw.Reddit('/r/cricket sidebar updater bot by /u/rreyv') #reddit stuff
+	r = praw.Reddit('/r/cricket sidebar updater and match thread creator bot by /u/rreyv') #reddit stuff
 	subredditName='rreyv'
 	r.login() #sign in!
 	fixturesData={}
 	fixturesData=getFixturesDictionary(5)
-
+	sendEmail("Bot has begun","Yep it has")
+	# SQL table init
 	i=0
 	#one time setup ends
 	while True:
 		#things that happen every four hours
 		while True:
-			#things that happen every 60 seconds
+			#things that happen every 45 seconds
 			updateSidebar(fixturesData,r,subredditName)
 			readInbox(r)
-			time.sleep(60)
+			time.sleep(45)
 			i+=1;
 			if i%240==0:
 				break
-			#End of 60 second loop
+			#End of 45 second loop
 		fixturesData={}
 		fixturesData=getFixturesDictionary(5)
 		sendEmail("Grabbing fixtures from Cricinfo","Grabbed fixtures from Cricinfo")
 		i=0
 		#end of four hour loop#
-
-	# con = None
-	# try:
-	# 	con=sql.connect('rCricket.db')
-	# 	cur=con.cursor()
-	# 	matchThreadText="Match Thread: something yada yada"
-	# 	matchThreadLink="http://www.google.com"
-	# 	cur.execute('insert into MatchThreads(\'MatchThreadTitle\',\'MatchThreadHyperLink\') values (\''+matchThreadText+'\',\''+matchThreadLink+'\')')
-	# 	#data=cur.fetchone()
-	# 	cur.execute('select * from MatchThreads')
-	# 	data=cur.fetchone()
-	# 	print data
-	# except sql.Error, e:
-	# 	print "Error %s:" % e.args[0]

@@ -2,11 +2,11 @@ import urllib2
 from bs4 import BeautifulSoup
 
 
-def createMatchThread(cricinfoLiveLink):
+def getMatchInfoWrapper(cricinfoLiveLink):
     # get the scorecard link from the cricinfo live link
     scorecardLink = getScorecardLink(cricinfoLiveLink)
     if scorecardLink == "Match Over":
-        print "Match Over"
+        return False, "Couldn't create match thread. Possible reasons are:\n\n* The match is over.\n* The match is not close to starting (i.e., live thread page is missing lots of data).\n* You did not send me the right link. The line must be the live thread link that you get from the fixtures page in Cricinfo."
     else:
         matchInfo = {}
         # get the soup from the scorecard link
@@ -20,7 +20,7 @@ def createMatchThread(cricinfoLiveLink):
         matchInfo['title'] = threadTitle
         matchInfo['teamInfo'] = teamLineup
         matchInfo['otherInfo'] = otherInfo
-        return matchInfo
+        return True,matchInfo
         # print threadTitle
 
 
@@ -29,8 +29,8 @@ def getScorecardLink(cricinfoLiveLink):
     liveIFrame = soup.find(id="live_iframe")
     # Match is over, live scorecard doesn't exist, return Match Over
     if not liveIFrame:
-        # return "Match Over"
-        return cricinfoLiveLink  # for debugging purposes
+        return "Match Over"
+        #return cricinfoLiveLink  # for debugging purposes
     return (cricinfoLiveLink + '?view=scorecard')
 
 
@@ -129,6 +129,7 @@ def getPlayingEleven(soup, battingClass):
     teamsList = {}
     team = soup.find(id=battingClass)
     if not team:
+        #Should never happen as we're checking if battingClass exists right before this function call
         print "Can't find team information."
         return ""
     teamName = team.find(class_="inningsHead").find(
@@ -188,8 +189,3 @@ def getOtherMatchRelatedInformation(soup):
             liLink = "http://www.espncricinfo.com" + liLink
             returnText = returnText + " [" + liText + "](" + liLink + ") |"
     return returnText[:-2]
-
-# if __name__ == "__main__":
-# liveThreadURL="http://www.espncricinfo.com/ci/engine/current/match/593725.html" #women's game
-#	getOtherMatchRelatedInformation(liveThreadURL)
-    # createMatchThread(liveThreadURL)

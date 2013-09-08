@@ -1,9 +1,10 @@
 import praw
-from getMatchInfo import createMatchThread
+from getMatchInfo import getMatchInfoWrapper
 from getFixturesInfo import getFixturesDictionary
 from datetime import datetime
 import time
 from emailGlobals import sendEmail
+import sqlite3 as sql
 
 
 def getMainThreadInformation(matchInfo):
@@ -26,13 +27,17 @@ def getMainThreadInformation(matchInfo):
     return text
 
 
-def getGeneralRedditStuff():
+def getGeneralRedditStuff(source):
     text = getStreamInformation()
-    text = text + getFooter()
+    text = text + getFooter(source)
     return text
 
-def getFooter():
-    return "\n\nThis thread has been created by a bot that is still being tested. Bug reports can be sent to /u/rreyv or posted to /r/rreyv."
+
+def getFooter(source):
+    if source=='rCricketBot':
+        return "\n\nThis thread was created automatically. Learn more about the bot here.\n***"
+    else:
+        return "\n\nThis thread was requested by /u/"+source+". Learn more about the bot here.\n***"
     pass
 
 def getStreamInformation():
@@ -45,64 +50,101 @@ def getStreamInformation():
     text = text + "\n\n ***"
     return text
 
-def createMatchThreadWrapper(r,threadTitle,liveThreadURL):
-    # ashes game
-    #liveThreadURL="http://www.espncricinfo.com/the-ashes-2013/engine/current/match/566936.html"
-    #liveThreadURL="http://www.espncricinfo.com/ci/engine/current/match/650125.html"
-    #liveThreadURL="http://www.espncricinfo.com/zimbabwe-v-pakistan-2013/engine/current/match/659555.html"
-    # women's game
-    #liveThreadURL = "http://www.espncricinfo.com/ci/engine/current/match/593725.html"
-    #liveThreadURL="http://www.espncricinfo.com/ci/engine/current/match/630770.html" #india A vs South Africa A#
-    #liveThreadURL="http://www.espncricinfo.com/zimbabwe-v-pakistan-2013/engine/current/match/659553.html"
-    #liveThreadURL="http://www.espncricinfo.com/ci/engine/match/663207.html"    # Zimbabwe Pakistan
-    matchInfo = createMatchThread(liveThreadURL)
+
+def createMatchThreadWrapper(r,threadTitle,liveThreadURL,source,subreddit):
+    RealLink,matchInfo = getMatchInfoWrapper(liveThreadURL)
+    if not RealLink:
+        return [False,matchInfo]
+    # At this point, we have a cricinfo live thread link
+
     if not threadTitle:
         threadTitle = matchInfo['title']
+
+    #If it's a test playing nation, tell them that the thread will be created automatically.
+
+    if ( source!='rCricketBot' and (WeCareAbout(matchInfo['teamInfo']['team1name']) or WeCareAbout(matchInfo['teamInfo']['team2name']))):
+        return [False,"Match thread creation request denied. \n\nAt least one of the teams has test status (or is Ireland). A match thread will be created automatically approximately one hour before the game. If a thread hasn't been created please message /u/rreyv"]
+
+    #If it's not a test playing nation, see if a thread already exists
+    [alreadyExists, replyLink]=HasThreadBeenCreated(liveThreadURL)
+    if alreadyExists:
+        return [False,"Match thread has been created already for this match less than 12 hours ago. Here's the [link.]("+replyLink+")"]
+
+    #At this line, the request to create the thread is either automated, or it's a match containing shitty teams
     threadText = "###" + threadTitle + "\n\n"
-    threadText = threadText + "[Link to Cricinfo Live Commentary](" + liveThreadURL + ")" + "\n\n"
+    threadText = threadText + "[Link to Cricinfo Live Commentary](" + liveThreadURL + ")" + " | Sort this thread by new posts" + "\n\n"
     threadText = threadText + getMainThreadInformation(matchInfo)
     # other match related information
     threadText = threadText + "\n\n" + "*Series links:* " + \
         "\n\n" + matchInfo['otherInfo'] + "\n\n" + "***" +"\n\n"
-    threadText = threadText + getGeneralRedditStuff()
-    submission = r.submit('rreyv', threadTitle, text=threadText)
-    print submission.url
-    sendMail("Started match thread","Started match thread")
+    threadText = threadText + getGeneralRedditStuff(source)
+    try:
+        submission = r.submit(subreddit, threadTitle, text=threadText)
+    except:
+        return [False, "Submission failed for some unknown reason. Maybe reddit was down? Please try again and if it fails, message /u/rreyv with the live thread link that you submitted."]
+    #Update the SQL table with submission information
+    InsertMatchThreadInfoIntoSQL(threadTitle,liveThreadURL,source,str(submission.url))
+
+    #By this line, the thread has been created
+    TryLoop=None
+    while not TryLoop:
+        try:
+            TryLoop=EditSubmission(r,submission)
+        except:
+            time.sleep(30)
+
+    #By this line, the submission has been edited and we can tell the requestor about it.
+    return [True,"Match thread successfully created. [Here's the link](" + str(submission.url) +")."]
+    sendEmail("Started match thread","Created a new match thread"+str(submission.url))
 
 
-# if __name__ == "__main__":
-#     r = praw.Reddit('/r/cricket Match Thread creator bot by /u/rreyv')
-#     r.login()
-#     approvedUpdaters=['rreyv','rCricketBot']
-#     #while True:
-#     # for message in r.get_unread(limit=None):
-#     #     msgSubject=str(message.subject)
-#     #     msgAuthor=str(message.author)
-#     #     msgBody=str(message.body)
-#     #     print "Author: " + msgAuthor
-#     #     print "Subject: " + msgSubject
-#     #     print "Body: " + msgBody
-#     #     #message.mark_as_read()
-#     #     if ((message.was_comment==False) and (msgAuthor in approvedUpdaters) and (msgSubject.find('reddit.com')!=-1)):
-#     #         submission=r.get_submission(msgSubject)
-#     #         selfText=submission.selftext
-#     #         selfText=selfText+"\n\n"
-#     #         selfText=selfText+"\n**/u/"+msgAuthor+" says:**\n"
-#     #         selfText=selfText+msgBody
-#     #         #submission.selftext(selfText)
-#     #         print selfText
-#     #         #setattr(submission,'selftext',selfText)
-#     #         submission.edit(selfText)
-#     createMatchThreadWrapper(r,"booga Booga","")
+def WeCareAbout(teamName):
+    teamName=teamName.strip()
+    squadPos=teamName.find('squad')
+    if squadPos!=-1:
+        teamName=teamName[:(squadPos-1)]
+    teamName=teamName.strip()
+    teamsWeCareAbout = ['Australia', 'England', 'New Zealand', 'Pakistan', 'India', 'South Africa', 'Zimbabwe', 'Bangladesh', 'Ireland', 'West Indies', 'Sri Lanka']
+    if ((teamName in teamsWeCareAbout) and (teamName.find("Women")==-1) and (teamName.find("Under-23")==-1) and (teamName.find("Under-19")==-1)):
+        return True
+    return False
+
+
+def InsertMatchThreadInfoIntoSQL(threadTitle,liveThreadURL,source,submissionUrl):
+    con = None
+    con = sql.connect('rCricket.db',detect_types=sql.PARSE_DECLTYPES)
+    cur = con.cursor()
+    currentGMT=datetime.utcnow()
+    cur.execute("insert into MatchThreads('threadTitle','liveThreadLink','source','matchThreadLink','creationTime') values (?,?,?,?,?)",(threadTitle,liveThreadURL,source,submissionUrl,currentGMT))
+    con.commit()
+    con.close()
+
+
+def HasThreadBeenCreated(liveThreadURL):
+    con = None
+    con = sql.connect('rCricket.db',detect_types=sql.PARSE_COLNAMES)
+    cur = con.cursor()
+    currentGMT=datetime.utcnow()
+    cur.execute("select max(creationTime) as '[timestamp]' from MatchThreads where liveThreadLink= ?",(liveThreadURL,))
+    data=cur.fetchone()
+    if not data[0]:
+        con.close()
+        return [False,None]
+    timeDifference=currentGMT-data[0]
+    if timeDifference.total_seconds()<=43200:
+        cur.execute("select MatchThreadLink from MatchThreads where creationTime=?", (data[0],))
+        data=cur.fetchone()
+        con.close()
+        return [True,data[0]]
+    return [False,None]
 
 
 
-'''Debugging purposes'''
-if __name__ == "__main__":
-    liveThreadURL="http://www.espncricinfo.com/zimbabwe-v-pakistan-2013/engine/match/659555.html"
-    #liveThreadURL="http://www.espncricinfo.com/ci/engine/current/match/650125.html"
-    threadTitle = "Match thread: 1st Test: Zimbabwe v Pakistan at Harare, Day 2"
-    r = praw.Reddit('/r/cricket Match Thread creator bot by /u/rreyv')
-    r.login()
-    createMatchThreadWrapper(r,threadTitle,liveThreadURL)
-    
+
+def EditSubmission(r,submission):
+    submissionUrl=str(submission.url)
+    selfText=submission.selftext
+    selfText=selfText.replace("Sort this thread by new posts","[Sort this thread by new posts]("+str(submissionUrl)+"?sort=new)")
+    selfText=selfText+"\nUser Updates: [ ^click ^here ^to ^post ^an ^update](http://www.reddit.com/message/compose?to=rCricketBot&subject="+str(submissionUrl)+")"
+    submission.edit(selfText)
+    return "Great Success!"
