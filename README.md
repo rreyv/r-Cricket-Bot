@@ -22,9 +22,21 @@ Running the bot on your own PC
 
 * install the following python modules: [PRAW] [2], [Beautiful Soup 4] [3]
 
-* Create a sqlite3 database named 'rCricket.db'
+* Create a sqlite3 database named 'rCricket.db' in the project folder
 
-* Create the MatchThreads table
+* Create the MatchThreads table:
+    CREATE TABLE "MatchThreads" (
+	    "fixtureId" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	    "threadTitle" TEXT NOT NULL,
+	    "liveThreadLink" TEXT NOT NULL,
+	    "source" TEXT,
+	    "matchThreadLink" TEXT NOT NULL,
+	    "creationTime" TEXT NOT NULL
+	)
+
+* Edit startBot.py and ensure you have the right subreddit name
+
+* Run the bot: python startBot.py
  
  [1]: http://i.imgur.com/pH5guDI.png "Example"
  [2]: https://praw.readthedocs.org/en/latest/ "PRAW"
