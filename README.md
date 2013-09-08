@@ -54,7 +54,16 @@ Running the bot on your own PC
 * Edit startBot.py and ensure you have the right subreddit name
 
 * Run the bot: python startBot.py
+
+
+Credits
+--------
+
+* [u/honeydew5] [4] for help with Python
  
+
  [1]: http://i.imgur.com/pH5guDI.png "Example"
  [2]: https://praw.readthedocs.org/en/latest/ "PRAW"
  [3]: http://www.crummy.com/software/BeautifulSoup/ "Beautiful Soup 4"
+ [4]: http://www.reddit.com/user/honeydew5/ "u/honeydew5"
+ 
