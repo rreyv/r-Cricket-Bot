@@ -8,7 +8,7 @@ TL;DR
 
 * The bot will create a match thread automatically for all test playing + Ireland games
 
-* To create a match thread for any other game (Domestic, Under 19s, Under 23s, Women's etc.), message the bot with the subject 'create thread' and just the ESPNCricinfo live live scorecard URL as the body. [Example] [1]. Please wait until the match is very close to begin (30 minutes or so) or has already begun to request a thread.
+* To create a match thread for any other game (domestic, Under 19s, Under 23s, Women's etc.), message the bot with the subject 'create thread' and just the ESPNCricinfo live live scorecard URL as the body. [Example] [1]. Please wait until the match is very close to begin (30 minutes or so) or has already begun to request a thread.
 
 
 
@@ -29,7 +29,7 @@ Running the bot on your own PC
 
 * Download the source code
 
-* install the following python modules: [PRAW] [2], [Beautiful Soup 4] [3]
+* Install the following python modules: [PRAW] [2], [Beautiful Soup 4] [3]
 
 * Create a sqlite3 database named 'rCricket.db' in the project folder
 
