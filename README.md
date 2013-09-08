@@ -25,6 +25,7 @@ Running the bot on your own PC
 * Create a sqlite3 database named 'rCricket.db' in the project folder
 
 * Create the MatchThreads table:
+
     CREATE TABLE "MatchThreads" (
 	    "fixtureId" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 	    "threadTitle" TEXT NOT NULL,
