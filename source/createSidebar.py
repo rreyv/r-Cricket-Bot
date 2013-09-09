@@ -51,10 +51,13 @@ def updateSidebar(fixturesData,r,subredditName):
 	try:
 		settings=r.get_settings(subredditName)
 		description=settings['description']
+		if ((description.find(BeginningOfTableMarker)==-1) or (description.find(EndOfTableMarker)==-1)):
+			sendEmail("We've got a problem","Couldn't update sidebar, couldn't find either BeginningOfTableMarker or EndOfTableMarker. Trying again in 60 seconds...")
+			return
 		descriptionBegin=description.find(BeginningOfTableMarker)
 		descriptionEnd=description.find(EndOfTableMarker) + len(EndOfTableMarker)
 		description=description[:descriptionBegin] + newTable + description[descriptionEnd:]
 		settings=r.get_subreddit(subredditName).update_settings(description=description)
 	except:
-		sendEmail("We've got a problem","Couldn't update sidebar, trying again in 60 seconds....")
+		sendEmail("We've got a problem","Couldn't update sidebar, trying again in 60 seconds...")
 
