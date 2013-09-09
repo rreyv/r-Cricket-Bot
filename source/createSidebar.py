@@ -11,7 +11,7 @@ from emailGlobals import sendEmail
 
 
 def MakeRedditTable(fixturesData,r,subreddit):
-	table="Upcoming International Fixtures:\n\nMatch|Time Left\n:---|:---\n"	#begin table.
+	table="**Upcoming International Fixtures:**\n\nMatch|Time Left\n:---|:---\n"	#begin table.
 	for i in fixturesData:
 		matchTime = fixturesData[i]['Time']	#get match time
 		currentGMT = datetime.utcnow()	#get UTC time
@@ -47,7 +47,7 @@ def MakeRedditTable(fixturesData,r,subreddit):
 def updateSidebar(fixturesData,r,subredditName):
 	newTable=MakeRedditTable(fixturesData,r,subredditName)
 	EndOfTableMarker="[More International Fixtures](http://www.espncricinfo.com/ci/content/match/fixtures/index.html?days=30)." #Signature to look for that marks the end of table
-	BeginningOfTableMarker="Upcoming International Fixtures:"	#Signature to look for that marks beginning of table
+	BeginningOfTableMarker="**Upcoming International Fixtures:**"	#Signature to look for that marks beginning of table
 	try:
 		settings=r.get_settings(subredditName)
 		description=settings['description']
