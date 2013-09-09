@@ -63,11 +63,11 @@ def AddUser(r,message):
 	'''Create list of users'''
 	for line in text_file:
 		# if line!="":
-		ApprovedUpdaters.append(line.strip())
+		ApprovedUpdaters.append(line.strip().lower())
 	text_file.close()
 	for user in str(message.body).split(','):
 	#for user in message.split(','):
-		user=user.split('/')[-1].strip()
+		user=user.split('/')[-1].strip().lower()
 		'''Check if the user exists in the list already'''
 		if ApprovedUpdaters.count(user)>0:
 			returnText+="User " + user + " is already an approved updater for match threads.\n\n"
@@ -100,11 +100,11 @@ def RemoveUser(r,message):
 	'''Create list of users'''
 	for line in text_file:
 		if line!="":
-			ApprovedUpdaters.append(line.strip())
+			ApprovedUpdaters.append(line.strip().lower())
 	text_file.close()
 	for user in str(message.body).split(','):
 	#for user in message.split(','):
-		user=user.split('/')[-1].strip()
+		user=user.split('/')[-1].strip().lower()
 		'''Check if the user exists in the list'''
 		if ApprovedUpdaters.count(user)>0:
 			ApprovedUpdaters.remove(user)
@@ -137,13 +137,13 @@ def UpdateThread(r,message):
 	ApprovedUpdaters=[]
 	text_file = open("ApprovedUpdaters.txt")
 	for line in text_file:
-		ApprovedUpdaters.append(line.strip())
+		ApprovedUpdaters.append(line.strip().lower())
 	text_file.close()	
 	msgAuthor=str(message.author)
+	msgAuthor=msgAuthor.lower()
 	msgSubject=str(message.subject)
 	msgBody=str(message.body)
 	if (msgAuthor in ApprovedUpdaters):
-
 		try:
 			submission=r.get_submission(msgSubject)
 		except:
