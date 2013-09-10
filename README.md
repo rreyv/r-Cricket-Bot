@@ -8,7 +8,7 @@ TL;DR
 
 * The bot will create a match thread automatically for all test playing + Ireland games
 
-* To create a match thread for any other game (domestic, Under 19s, Under 23s, Women's etc.), message the bot with the subject 'create thread' and just the ESPNCricinfo live live scorecard URL as the body. [Example] [1]. Please wait until the match is very close to the start (30 minutes to 1 hour) or has already begun (a ball has been bowled) to request a thread. **The bot might fail in some cases where the toss has occured but a ball hasn't been bowled.**
+* To create a match thread for any other game (domestic, Under 19s, Under 23s, Women's etc.), message the bot with the subject 'create thread' and just the ESPNCricinfo live live scorecard URL as the body. [Example] [1]. Please wait until the match is very close to the start (between 30 minutes and 1 hour) or has already begun (a ball has been bowled) to request a thread. **The bot might fail in some cases where the toss has occured but a ball hasn't been bowled.**
 
 
 
