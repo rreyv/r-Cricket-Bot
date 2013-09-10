@@ -10,10 +10,10 @@ from praw.errors import ExceptionList, APIException, InvalidCaptcha, InvalidUser
 from socket import timeout
 import sqlite3 as sql
 from emailGlobals import sendEmail
+import HTMLParser
 
 def readInbox(r,subreddit):
 	Moderators=['sunnydelish','TheAshes','jack47','EyesAllOnFire','ingreenheaven','rreyv']
-	#approvedUpdaters=['rreyv','sunnydelish']
 	try:
 		for message in r.get_unread(limit=None):
 			msgSubject=str(message.subject)
@@ -157,6 +157,8 @@ def UpdateThread(r,message):
 		selfText=selfText+"\n\n*/u/"+msgAuthor+":*\n\n"
 		selfText=selfText+msgBody
 		selfText=selfText+"\n***"
+		html_parser = HTMLParser.HTMLParser()
+		selfText = html_parser.unescape(selfText)
 		submission.edit(selfText)
 		returnText="Match thread has been updated."
 		return returnText
