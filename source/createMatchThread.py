@@ -42,7 +42,7 @@ def getFooter(source):
 
 def getStreamInformation():
     Lshunter = "[Lshunter](http://www.lshunter.tv/other-live-streaming-video.html)"
-    Wiziwig = "[Wiziwig](http://www.wiziwig.tv/competition.php?part=sports&discipline=cricket)"
+    Wiziwig = "[Wiziwig](http://bit.ly/16gtoWs)"
     MoreStreams = "[More streams](http://www.reddit.com/r/Cricket/comments/foezt/live_streams/)"
     Crictime = "[Crictime](http://www.crictime.com)"
     text = "\n\n *Live streams:* " + Lshunter + " | " + \
