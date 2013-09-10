@@ -1,11 +1,12 @@
 import praw
+from praw.errors import ExceptionList, APIException, InvalidCaptcha, InvalidUser, RateLimitExceeded
 from createMatchThread import createMatchThreadWrapper
 from getFixturesInfo import getFixturesDictionary
 from datetime import datetime
 import time
 import logging
+import HTMLParser
 from requests.exceptions import HTTPError
-from praw.errors import ExceptionList, APIException, InvalidCaptcha, InvalidUser, RateLimitExceeded
 from socket import timeout
 from emailGlobals import sendEmail
 
@@ -50,7 +51,9 @@ def updateSidebar(fixturesData,r,subredditName):
 	BeginningOfTableMarker="**Upcoming International Fixtures:**"	#Signature to look for that marks beginning of table
 	try:
 		settings=r.get_settings(subredditName)
-		description=settings['description']
+		description_html=settings['description']
+		html_parser = HTMLParser.HTMLParser()
+		description = html_parser.unescape(description_html)
 		if ((description.find(BeginningOfTableMarker)==-1) or (description.find(EndOfTableMarker)==-1)):
 			sendEmail("We've got a problem","Couldn't update sidebar, couldn't find either BeginningOfTableMarker or EndOfTableMarker. Trying again in 60 seconds...")
 			return
