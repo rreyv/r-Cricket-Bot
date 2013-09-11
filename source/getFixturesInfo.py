@@ -182,7 +182,7 @@ def getMonthNumber(string):
 def returnMatchesWeCareAbout(fixturesData,n):
     fixturesWeCareAbout={}
     j=0
-    teamsWeCareAbout = ['Australia', 'England', 'New Zealand', 'Pakistan', 'India', 'South Africa', 'Zimbabwe', 'Bangladesh', 'Ireland', 'West Indies', 'Sri Lanka']
+    teamsWeCareAbout = ['Australia', 'England', 'New Zealand', 'Pakistan', 'India', 'South Africa', 'Zimbabwe', 'Bangladesh', 'West Indies', 'Sri Lanka']
     for i in fixturesData:
         if ((fixturesData[i]['TeamOne'] in teamsWeCareAbout) or (fixturesData[i]['TeamTwo'] in teamsWeCareAbout)):
             if ((fixturesData[i]['TeamOne'].find("Under-19")==-1) and (fixturesData[i]['TeamOne'].find("Under-23")==-1) and (fixturesData[i]['TeamOne'].find("Women")==-1)):
