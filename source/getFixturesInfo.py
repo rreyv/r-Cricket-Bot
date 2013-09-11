@@ -195,7 +195,7 @@ def returnMatchesWeCareAbout(fixturesData,n):
 
 def getFixturesDictionary(n):
     fixturesData = {}
-    url='http://www.espncricinfo.com/ci/content/match/fixtures/index.html?days=45'
+    url='http://www.espncricinfo.com/ci/content/match/fixtures/index.html?days=46'
     fixturesData = readInternationalFixtures(url, fixturesData)
     fixturesData = returnMatchesWeCareAbout(fixturesData,n)
     return fixturesData
