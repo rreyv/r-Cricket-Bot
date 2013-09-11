@@ -3,10 +3,14 @@ rCricketBot
 
 Does things for /r/cricket
 
+!Important!
+
+***Ireland support has been removed as of Sept. 10. ESPNCricinfo is not classifying Ireland's four day games under 'International' so saying that the bot supports Ireland would be incorrect. If you wish to start a match thread for Ireland games, please message the bot to do so (steps are below) or create one manually.*** 
+
 TL;DR
 -----
 
-* The bot will create a match thread automatically for all test playing + Ireland games
+* The bot will create a match thread automatically for all test playing nations
 
 * To create a match thread for any other game (domestic, Under 19s, Under 23s, Women's etc.), message the bot with the subject 'create thread' and just the ESPNCricinfo live live scorecard URL as the body. [Example] [1]. Please wait until the match is very close to the start (between 30 minutes and 1 hour) or has already begun (a ball has been bowled) to request a thread. **The bot might fail in some cases where the toss has occured but a ball hasn't been bowled.**
 
