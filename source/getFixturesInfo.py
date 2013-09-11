@@ -33,7 +33,7 @@ def readInternationalFixtures( myurl, ciResults):
     allRows = soup.find_all('tr')
 
     i=0
-    for row in allRows[:250]:
+    for row in allRows:
         if 'id' in row.attrs:
             rowType = "date"
         elif 'class' in row.attrs:
@@ -195,7 +195,7 @@ def returnMatchesWeCareAbout(fixturesData,n):
 
 def getFixturesDictionary(n):
     fixturesData = {}
-    url='http://www.espncricinfo.com/ci/content/match/fixtures/index.html?days=30'
+    url='http://www.espncricinfo.com/ci/content/match/fixtures/index.html?days=45'
     fixturesData = readInternationalFixtures(url, fixturesData)
     fixturesData = returnMatchesWeCareAbout(fixturesData,n)
     return fixturesData
