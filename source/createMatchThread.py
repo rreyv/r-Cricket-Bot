@@ -64,7 +64,7 @@ def createMatchThreadWrapper(r,threadTitle,liveThreadURL,source,subreddit):
     #If it's a test playing nation, tell them that the thread will be created automatically.
 
     if ( source!='rCricketBot' and (WeCareAbout(matchInfo['teamInfo']['team1name']) or WeCareAbout(matchInfo['teamInfo']['team2name']))):
-        return [False,"Match thread creation request denied. \n\nAt least one of the teams has test status (or is Ireland). A match thread will be created automatically approximately one hour before the game. If a thread hasn't been created please message /u/rreyv"]
+        return [False,"Match thread creation request denied. \n\nAt least one of the teams has test status. A match thread will be created automatically approximately one hour before the game. If a thread hasn't been created please message /u/rreyv"]
 
     #If it's not a test playing nation, see if a thread already exists
     [alreadyExists, replyLink]=HasThreadBeenCreated(liveThreadURL)
@@ -73,7 +73,7 @@ def createMatchThreadWrapper(r,threadTitle,liveThreadURL,source,subreddit):
 
     #At this line, the request to create the thread is either automated, or it's a match containing shitty teams
     threadText = "###" + threadTitle + "\n\n"
-    threadText = threadText + "[Link to Cricinfo Live Commentary](" + liveThreadURL + ")" + " | Sort this thread by new posts" + "\n\n"
+    threadText = threadText + "[Link to Cricinfo Live Commentary](" + liveThreadURL + ")" + " | Sort this thread by new posts | Reddit-Stream link for this thread" + "\n\n"
     threadText = threadText + getMainThreadInformation(matchInfo)
     # other match related information
     threadText = threadText + "\n\n" + "*Series links:* " + \
@@ -108,7 +108,7 @@ def WeCareAbout(teamName):
     if squadPos!=-1:
         teamName=teamName[:(squadPos-1)]
     teamName=teamName.strip()
-    teamsWeCareAbout = ['Australia', 'England', 'New Zealand', 'Pakistan', 'India', 'South Africa', 'Zimbabwe', 'Bangladesh', 'Ireland', 'West Indies', 'Sri Lanka']
+    teamsWeCareAbout = ['Australia', 'England', 'New Zealand', 'Pakistan', 'India', 'South Africa', 'Zimbabwe', 'Bangladesh', 'West Indies', 'Sri Lanka']
     if ((teamName in teamsWeCareAbout) and (teamName.find("Women")==-1) and (teamName.find("Under-23")==-1) and (teamName.find("Under-19")==-1)):
         return True
     return False
@@ -145,8 +145,10 @@ def HasThreadBeenCreated(liveThreadURL):
 
 def EditSubmission(r,submission):
     submissionUrl=str(submission.url)
+    redditStreamLink=submissionUrl.replace("http://www.reddit.com","http://www.reddit-stream.com")
     selfText=submission.selftext
     selfText=selfText.replace("Sort this thread by new posts","[Sort this thread by new posts]("+str(submissionUrl)+"?sort=new)")
+    selfText=selfText.replace("Reddit-Stream link for this thread","[Reddit-Stream link for this thread]("+redditStreamLink+")")
     selfText=selfText+"\nUser Updates: [ ^click ^here ^to ^post ^an ^update](http://www.reddit.com/message/compose?to=rCricketBot&subject="+str(submissionUrl)+")"
     html_parser = HTMLParser.HTMLParser()
     selfText = html_parser.unescape(selfText)
