@@ -5,6 +5,7 @@ from datetime import datetime
 import time
 from emailGlobals import sendEmail
 import sqlite3 as sql
+import HTMLParser
 
 
 def getMainThreadInformation(matchInfo):
@@ -42,7 +43,7 @@ def getFooter(source):
 
 def getStreamInformation():
     Lshunter = "[Lshunter](http://www.lshunter.tv/other-live-streaming-video.html)"
-    Wiziwig = "[Wiziwig](http://bit.ly/16gtoWs)"
+    Wiziwig = "[Wiziwig](http://www.wiziwig.tv/competition.php?part=sports&discipline=cricket)"
     MoreStreams = "[More streams](http://www.reddit.com/r/Cricket/comments/foezt/live_streams/)"
     Crictime = "[Crictime](http://www.crictime.com)"
     text = "\n\n *Live streams:* " + Lshunter + " | " + \
@@ -78,6 +79,8 @@ def createMatchThreadWrapper(r,threadTitle,liveThreadURL,source,subreddit):
     threadText = threadText + "\n\n" + "*Series links:* " + \
         "\n\n" + matchInfo['otherInfo'] + "\n\n" + "***" +"\n\n"
     threadText = threadText + getGeneralRedditStuff(source)
+    html_parser = HTMLParser.HTMLParser()
+    threadText = html_parser.unescape(threadText)
     try:
         submission = r.submit(subreddit, threadTitle, text=threadText)
     except:
@@ -94,7 +97,7 @@ def createMatchThreadWrapper(r,threadTitle,liveThreadURL,source,subreddit):
             time.sleep(30)
 
     #By this line, the submission has been edited and we can tell the requestor about it.
-    sendEmail("Started match thread","Created a new match thread"+str(submission.url))
+    sendEmail("Started match thread","Created a new match thread "+str(submission.url))
     return [True,"Match thread successfully created. [Here's the link](" + str(submission.url) +")."]
     
 
@@ -140,12 +143,12 @@ def HasThreadBeenCreated(liveThreadURL):
     return [False,None]
 
 
-
-
 def EditSubmission(r,submission):
     submissionUrl=str(submission.url)
     selfText=submission.selftext
     selfText=selfText.replace("Sort this thread by new posts","[Sort this thread by new posts]("+str(submissionUrl)+"?sort=new)")
     selfText=selfText+"\nUser Updates: [ ^click ^here ^to ^post ^an ^update](http://www.reddit.com/message/compose?to=rCricketBot&subject="+str(submissionUrl)+")"
+    html_parser = HTMLParser.HTMLParser()
+    selfText = html_parser.unescape(selfText)
     submission.edit(selfText)
     return "Great Success!"
