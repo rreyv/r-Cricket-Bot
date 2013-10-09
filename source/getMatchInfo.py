@@ -86,7 +86,13 @@ def getMatchDay(soup, multipleDays):
 
 def getTeamLineup(soup):
     teamsList = {}
+    numberOfInningsBat0 = len(soup.find_all(id="inningsBat0"))
+    if numberOfInningsBat0>1:
+        teamsList = getAnnouncedTeams(soup)
+        return teamsList
+
     inningsBat1 = soup.find(id="inningsBat1")
+
     if not inningsBat1:
         teamsList = getSquad(soup)  # match hasn't begun, return squad
         return teamsList
@@ -105,6 +111,23 @@ def getTeamLineup(soup):
         teamsList['team1players'] = teamsList1['teamplayers']
         teamsList['team2players'] = teamsList2['teamplayers']
         return teamsList
+
+
+def getAnnouncedTeams(soup):
+    teamsList = {}
+    team = soup.find(id=battingClass)
+    if not team:
+        #Should never happen as we're checking if battingClass exists right before this function call
+        print "Can't find team information."
+        return ""
+    teamName = team.find(class_="inningsHead").find(
+        "td").find_next_sibling().get_text()
+    teamName = extractTeamName(teamName)
+    teamsList['teamname'] = teamName
+    teamsList['teamplayers'] = []
+    teamsList['teamplayers'].extend(getPlayingBatsmen(team))
+    teamsList['teamplayers'].extend(getDidNotBatBatsmen(team))
+    return teamsList
 
 
 def getSquad(soup):
