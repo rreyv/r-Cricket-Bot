@@ -6,7 +6,7 @@ def getMatchInfoWrapper(cricinfoLiveLink):
     # get the scorecard link from the cricinfo live link
     scorecardLink = getScorecardLink(cricinfoLiveLink)
     if scorecardLink == "Match Over":
-        return False, "Couldn't create match thread. Possible reasons are:\n\n* The match is over.\n* The match is not close to starting (i.e., live thread page is missing lots of data).\n* You did not send me the right link. The line must be the live thread link that you get from the fixtures page in Cricinfo."
+        return False, "Couldn't create match thread. Possible reasons are:\n\n* The match is over.\n* The match is not close to starting (i.e., live thread page is missing lots of data).\n* You did not send me the right link. The link must be the live thread link that you get from the fixtures page in Cricinfo."
     else:
         matchInfo = {}
         # get the soup from the scorecard link
