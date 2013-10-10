@@ -114,19 +114,20 @@ def getTeamLineup(soup):
 
 
 def getAnnouncedTeams(soup):
+    i = 1
     teamsList = {}
-    team = soup.find(id=battingClass)
-    if not team:
-        #Should never happen as we're checking if battingClass exists right before this function call
-        print "Can't find team information."
-        return ""
-    teamName = team.find(class_="inningsHead").find(
-        "td").find_next_sibling().get_text()
-    teamName = extractTeamName(teamName)
-    teamsList['teamname'] = teamName
-    teamsList['teamplayers'] = []
-    teamsList['teamplayers'].extend(getPlayingBatsmen(team))
-    teamsList['teamplayers'].extend(getDidNotBatBatsmen(team))
+    for team in soup.find_all(class_="inningsBat0"):
+        if not team:
+            #Should never happen as we're checking if battingClass exists right before this function call
+            print "Can't find team information."
+            return ""
+        teamName = team.find(class_="inningsHead").find(
+            "td").find_next_sibling().get_text()
+        teamName = extractTeamName(teamName)
+        teamsList['team' + str(i) + 'name'] = teamName
+        teamsList['team' + str(i) + 'players'] = []
+        teamsList['team' + str(i) + 'players'].extend(getPlayingBatsmen(team))
+        teamsList['team' + str(i) + 'players'].extend(getDidNotBatBatsmen(team))
     return teamsList
 
 
