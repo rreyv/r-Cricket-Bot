@@ -11,6 +11,7 @@ from socket import timeout
 import sqlite3 as sql
 from emailGlobals import sendEmail
 from inboxHandler import readInbox
+from liveScoreHandler import updateLiveScores
 
 
 if __name__=="__main__":
@@ -28,6 +29,7 @@ if __name__=="__main__":
 		#things that happen every four hours
 		while True:
 			#things that happen every 50 seconds
+			updateLiveScores(r,subredditName)
 			updateSidebar(fixturesData,r,subredditName)
 			readInbox(r,subredditName)
 			time.sleep(50)
