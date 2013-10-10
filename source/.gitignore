@@ -6,5 +6,6 @@ getFixturesInfo.pyc
 getMatchInfo.pyc
 inboxHandler.pyc
 rCricket.db
+emailGlobals.py
 backups/ApprovedUpdaters.txt
 backups/sidebar.txt
