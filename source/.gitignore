@@ -8,3 +8,5 @@ emailGlobals.pyc
 getFixturesInfo.pyc
 getMatchInfo.pyc
 inboxHandler.pyc
+emailGlobals.py
+rCricket.db
