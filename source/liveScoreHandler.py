@@ -1,8 +1,6 @@
 import praw
 import datetime
 import time
-from requests.exceptions import HTTPError
-from praw.errors import ExceptionList, APIException, InvalidCaptcha, InvalidUser, RateLimitExceeded
 import sqlite3 as sql
 from bs4 import BeautifulSoup
 from emailGlobals import sendEmail
