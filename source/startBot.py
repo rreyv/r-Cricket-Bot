@@ -12,6 +12,7 @@ import sqlite3 as sql
 from emailGlobals import sendEmail
 from inboxHandler import readInbox
 from liveScoreHandler import updateLiveScores
+from lineupHandler import updateLineups
 
 
 if __name__=="__main__":
@@ -30,6 +31,7 @@ if __name__=="__main__":
 		while True:
 			#things that happen every 50 seconds
 			updateLiveScores(r)
+			updateLineups(r)
 			updateSidebar(fixturesData,r,subredditName)
 			readInbox(r,subredditName)
 			time.sleep(50)
