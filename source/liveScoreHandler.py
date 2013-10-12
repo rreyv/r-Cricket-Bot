@@ -1,5 +1,5 @@
 import praw
-from datetime import datetime
+import datetime
 from requests.exceptions import HTTPError
 from praw.errors import ExceptionList, APIException, InvalidCaptcha, InvalidUser, RateLimitExceeded
 import sqlite3 as sql
@@ -9,36 +9,57 @@ from inboxHandler import readInbox
 from getMatchInfo import returnSoup
 
 
-def updateLiveScores(r,subredditName):
-	#get list of currently running matches
-	#loop over currently running matches:
-		#matchScoreUpdater(r,subredditName,matchId) #For each running match, run the update score function
-	pass
+def updateLiveScores(r):
+	ArrayOfCurrentlyRunningFixtures = getArrayOfCurrentlyRunningFixtures()
+	if not ArrayOfCurrentlyRunningFixtures:
+		return
+	for runningFixture in ArrayOfCurrentlyRunningFixtures:
+		matchThreadLink = runningFixture[0]
+		liveThreadLink = runningFixture[1]
+		matchScoreUpdater(r,liveThreadLink,matchThreadLink)
 
-def matchScoreUpdater(r,subredditName,matchId):
-	#from matchId, get the live thread hyperlink
-	liveThreadLink='http://www.espncricinfo.com/bangladesh-v-new-zealand-2013-14/engine/match/668949.html'
+
+def getArrayOfCurrentlyRunningFixtures():
+	con = None
+	con = sql.connect('rCricket.db',detect_types=sql.PARSE_COLNAMES)
+	cur = con.cursor()
+	currentGMT=datetime.datetime.utcnow()
+	TwelveHoursAgo=currentGMT - datetime.timedelta(0,0,0,0,0,12)
+	cur.execute("select matchThreadLink,liveThreadLink from MatchThreads where creationTime between ? and ?",(TwelveHoursAgo,currentGMT))
+	data=cur.fetchall()
+	return data
+
+def matchScoreUpdater(r,liveThreadLink,matchThreadLink):
+	#liveThreadLink='http://www.espncricinfo.com/bangladesh-v-new-zealand-2013-14/engine/match/668949.html'
 	iFrameLink=getiFrameLink(liveThreadLink)
 	liveScoreText=getLiveScoreText(iFrameLink)
-	updateMatchThread(r,subredditName,matchId,liveScoreText)
+	updateMatchThread(r,matchThreadLink,liveScoreText)
 
 def getiFrameLink(liveThreadLink):
 	return liveThreadLink+'?template=iframe_desktop'
 
-def updateMatchThread(r,subredditName,matchId,liveScoreText):
-	pass
+def updateMatchThread(r,matchThreadLink,liveScoreText):
+	submission = r.get_submission(matchThreadLink)
+	selfText = submission.selftext
+	#print selfText
+	start = selfText.find("***")
+	end = selfText.find("***",(start+3)) + 3
+	selfText = selfText[:start] + liveScoreText + selfText[end:]
+	submission.edit(selfText)
 
 def getLiveScoreText(iFrameLink):
-	returnText="|Team|Score|\n|:---|:---|"
+	returnText="***\n\n|Team|Score|\n|:---|:---|"
 	soup = returnSoup(iFrameLink)
 	for Table in soup.find_all(class_="desktopPanelContent"):
 		returnText=returnText+HTMLTableToPythonTable(Table)+"\n\n"
+	index=returnText.find("|Batsmen|R|B|4s|6s|")+len("|Batsmen|R|B|4s|6s|")
+	returnText=returnText[:index]+"\n|:---|:---|:---|:---|:---|"+returnText[index:]
+	returnText=returnText+"***"
 	print returnText
-
+	return returnText
 
 def HTMLTableToPythonTable(Table):
 	returnText=""
-	#Table = soup.find(class_=tableClass)
 	for TableRow in Table.find_all("tr"):
 		if len(TableRow.find_all("td"))>1:
 			returnText=returnText+"\n"
@@ -52,6 +73,10 @@ def HTMLTableToPythonTable(Table):
 				returnText=returnText+"\n\n"+TableData.string
 	return returnText
 
-
 if __name__=="__main__":
-	matchScoreUpdater(1,2,3)
+	#matchScoreUpdater(1,2,3,4)
+	#getArrayOfCurrentlyRunningFixtures()
+	r = praw.Reddit('/r/rreyv live score updater test by /u/rreyv. Version 1.0') #reddit stuff
+	subredditName='cricket'
+	r.login() #sign in!
+	updateLiveScores(r)
