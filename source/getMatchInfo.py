@@ -128,6 +128,7 @@ def getAnnouncedTeams(soup):
         teamsList['team' + str(i) + 'players'] = []
         teamsList['team' + str(i) + 'players'].extend(getPlayingBatsmen(team))
         teamsList['team' + str(i) + 'players'].extend(getDidNotBatBatsmen(team))
+        i=i+1
     return teamsList
 
 
