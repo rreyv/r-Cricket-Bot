@@ -29,7 +29,7 @@ if __name__=="__main__":
 		#things that happen every four hours
 		while True:
 			#things that happen every 50 seconds
-			updateLiveScores(r,subredditName)
+			updateLiveScores(r)
 			updateSidebar(fixturesData,r,subredditName)
 			readInbox(r,subredditName)
 			time.sleep(50)

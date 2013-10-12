@@ -79,12 +79,12 @@ def HTMLTableToPythonTable(Table):
 				returnText[2]=returnText[2]+TableData.string+"\n\n"
 	return returnText
 
-if __name__=="__main__":
-	#matchScoreUpdater(1,2,3,4)
-	#getArrayOfCurrentlyRunningFixtures()
-	r = praw.Reddit('/r/rreyv live score updater test by /u/rreyv. Version 1.0') #reddit stuff
-	subredditName='cricket'
-	r.login() #sign in!
-	while True:
-		updateLiveScores(r)
-		time.sleep(50)
+# if __name__=="__main__":
+# 	#matchScoreUpdater(1,2,3,4)
+# 	#getArrayOfCurrentlyRunningFixtures()
+# 	r = praw.Reddit('/r/rreyv live score updater test by /u/rreyv. Version 1.0') #reddit stuff
+# 	subredditName='cricket'
+# 	r.login() #sign in!
+# 	while True:
+# 		updateLiveScores(r)
+# 		time.sleep(50)
