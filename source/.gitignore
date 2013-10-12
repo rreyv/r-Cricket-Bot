@@ -10,3 +10,5 @@ getMatchInfo.pyc
 inboxHandler.pyc
 emailGlobals.py
 rCricket.db
+ApprovedUpdaters.txt
+liveScoreHandler.pyc
