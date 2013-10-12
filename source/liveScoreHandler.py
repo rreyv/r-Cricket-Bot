@@ -32,7 +32,7 @@ def getArrayOfCurrentlyRunningFixtures():
 	return data
 
 def matchScoreUpdater(r,liveThreadLink,matchThreadLink):
-	#liveThreadLink='http://www.espncricinfo.com/bangladesh-v-new-zealand-2013-14/engine/match/668949.html'
+	#liveThreadLink='http://www.espncricinfo.com/india-v-australia-2013-14/engine/current/match/647249.html'
 	iFrameLink=getiFrameLink(liveThreadLink)
 	liveScoreText=getLiveScoreText(iFrameLink)
 	updateMatchThread(r,matchThreadLink,liveScoreText)
@@ -61,7 +61,6 @@ def getLiveScoreText(iFrameLink):
 	finalReturnText=returnText[1][:index]+"\n|:---|:---|:---|:---|:---|"+returnText[1][index:]
 	finalReturnText=finalReturnText + returnText[2]
 	finalReturnText=finalReturnText+"***"
-	print finalReturnText
 	return finalReturnText
 
 def HTMLTableToPythonTable(Table):
@@ -71,7 +70,10 @@ def HTMLTableToPythonTable(Table):
 			returnText[1]=returnText[1]+"\n"
 			returnText[1]=returnText[1]+"|"
 			for TableData in TableRow.find_all("td"):
-				returnText[1]=returnText[1]+TableData.string+"|"
+				if TableData.string:
+					returnText[1]=returnText[1]+TableData.string+"|"
+				else:
+					returnText[1]=returnText[1]+" "+ "|"
 	for TableRow in Table.find_all("tr"):
 		if len(TableRow.find_all("td"))==1:
 			TableData=TableRow.find("td")
@@ -80,11 +82,11 @@ def HTMLTableToPythonTable(Table):
 	return returnText
 
 # if __name__=="__main__":
-# 	#matchScoreUpdater(1,2,3,4)
-# 	#getArrayOfCurrentlyRunningFixtures()
-# 	r = praw.Reddit('/r/rreyv live score updater test by /u/rreyv. Version 1.0') #reddit stuff
-# 	subredditName='cricket'
-# 	r.login() #sign in!
-# 	while True:
-# 		updateLiveScores(r)
-# 		time.sleep(50)
+#  	matchScoreUpdater(1,2,3)
+#  	#getArrayOfCurrentlyRunningFixtures()
+#  	#r = praw.Reddit('/r/rreyv live score updater test by /u/rreyv. Version 1.0') #reddit stuff
+#  	#subredditName='cricket'
+#  	#r.login() #sign in!
+#  	#while True:
+#  	#	updateLiveScores(r)
+#  	#	time.sleep(50)
