@@ -1,5 +1,6 @@
 import praw
 import datetime
+import time
 from requests.exceptions import HTTPError
 from praw.errors import ExceptionList, APIException, InvalidCaptcha, InvalidUser, RateLimitExceeded
 import sqlite3 as sql
@@ -7,6 +8,7 @@ from bs4 import BeautifulSoup
 from emailGlobals import sendEmail
 from inboxHandler import readInbox
 from getMatchInfo import returnSoup
+import HTMLParser
 
 
 def updateLiveScores(r):
@@ -41,36 +43,40 @@ def getiFrameLink(liveThreadLink):
 def updateMatchThread(r,matchThreadLink,liveScoreText):
 	submission = r.get_submission(matchThreadLink)
 	selfText = submission.selftext
-	#print selfText
+	html_parser = HTMLParser.HTMLParser()
 	start = selfText.find("***")
 	end = selfText.find("***",(start+3)) + 3
 	selfText = selfText[:start] + liveScoreText + selfText[end:]
+	selfText = html_parser.unescape(selfText)
 	submission.edit(selfText)
 
 def getLiveScoreText(iFrameLink):
-	returnText="***\n\n|Team|Score|\n|:---|:---|"
+	returnText=["","",""]
+	returnText[1]="***\n\n|Team|Score|\n|:---|:---|"
 	soup = returnSoup(iFrameLink)
 	for Table in soup.find_all(class_="desktopPanelContent"):
-		returnText=returnText+HTMLTableToPythonTable(Table)+"\n\n"
-	index=returnText.find("|Batsmen|R|B|4s|6s|")+len("|Batsmen|R|B|4s|6s|")
-	returnText=returnText[:index]+"\n|:---|:---|:---|:---|:---|"+returnText[index:]
-	returnText=returnText+"***"
-	print returnText
-	return returnText
+		returnText[1]=returnText[1]+HTMLTableToPythonTable(Table)[1]+"\n\n"
+		returnText[2]=returnText[2]+HTMLTableToPythonTable(Table)[2]
+	index=returnText[1].find("|Batsmen|R|B|4s|6s|")+len("|Batsmen|R|B|4s|6s|")
+	finalReturnText=returnText[1][:index]+"\n|:---|:---|:---|:---|:---|"+returnText[1][index:]
+	finalReturnText=finalReturnText + returnText[2]
+	finalReturnText=finalReturnText+"***"
+	print finalReturnText
+	return finalReturnText
 
 def HTMLTableToPythonTable(Table):
-	returnText=""
+	returnText=["","",""]
 	for TableRow in Table.find_all("tr"):
 		if len(TableRow.find_all("td"))>1:
-			returnText=returnText+"\n"
-			returnText=returnText+"|"
+			returnText[1]=returnText[1]+"\n"
+			returnText[1]=returnText[1]+"|"
 			for TableData in TableRow.find_all("td"):
-				returnText=returnText+TableData.string+"|"
+				returnText[1]=returnText[1]+TableData.string+"|"
 	for TableRow in Table.find_all("tr"):
 		if len(TableRow.find_all("td"))==1:
 			TableData=TableRow.find("td")
 			if TableData.string:
-				returnText=returnText+"\n\n"+TableData.string
+				returnText[2]=returnText[2]+TableData.string+"\n\n"
 	return returnText
 
 if __name__=="__main__":
@@ -79,4 +85,6 @@ if __name__=="__main__":
 	r = praw.Reddit('/r/rreyv live score updater test by /u/rreyv. Version 1.0') #reddit stuff
 	subredditName='cricket'
 	r.login() #sign in!
-	updateLiveScores(r)
+	while True:
+		updateLiveScores(r)
+		time.sleep(50)
