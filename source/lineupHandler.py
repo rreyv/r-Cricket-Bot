@@ -7,12 +7,19 @@ from praw.errors import ExceptionList, APIException, InvalidCaptcha, InvalidUser
 import sqlite3 as sql
 from emailGlobals import sendEmail
 from getMatchInfo import returnSoup
+from liveScoreHandler import getArrayOfCurrentlyRunningFixtures
 import re
 
 def updateLineups(r):
-	#TwelveHourOldMatches
-	#figure out matches you need to update the lineup for
+	ArrayOfCurrentlyRunningFixtures = getArrayOfCurrentlyRunningFixtures()
+	if not ArrayOfCurrentlyRunningFixtures:
+		return
+	for runningFixture in ArrayOfCurrentlyRunningFixtures:
+		matchThreadLink = runningFixture[0]
+		liveThreadLink = runningFixture[1]
 		updateLineUpPerThread(matchThreadId)
+	#figure out matches you need to update the lineup for
+		
 		pass
 
 def updateLineupPerThread(matchThreadId):
@@ -20,24 +27,40 @@ def updateLineupPerThread(matchThreadId):
 	selfText = submission.selftext
 	teamOneName,teamOnePlayers=extractTeamInfo(selfText,1)
 	teamTwoName,teamTwoPlayers=extractTeamInfo(selfText,2)
-	format="tests"
+	threadTitle=submission.title.lower()
+	if 'test' in threadTitle:
+		format='tests'
+	elif 'odi' in threadTitle:
+		format='odi'
+	elif 't20i' in threadTitle:
+		format='t20i'
+	else:
+		return False,"Couldn't figure out the format."
+
 	teamOneTable=teamOneName+"|M|R|HS|Avg|100|Wkt|BBI|Bowl Av.|5|Ct|St|"+"(v. )"+teamTwoName+"|M|R|HS|Avg|100|Wkt|BBI|Bowl Av.|5|Ct|St|\n"
 	teamOneTable=teamOneTable+"|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|\n"
 	teamTwoTable=teamTwoName+"|M|R|HS|Avg|100|Wkt|BBI|Bowl Av.|5|Ct|St|"+"(v. )"+teamOneName+"|M|R|HS|Avg|100|Wkt|BBI|Bowl Av.|5|Ct|St|\n"
 	teamTwoTable=teamTwoTable+"|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|\n"
-	for player in teamOnePlayers:
-		teamOneTable=teamOneTable+returnStatsPerPlayer(player,teamTwoName.lower(),format)+"\n"
-		time.sleep(2)
-	for player in teamTwoPlayers:
-	 	teamTwoTable=teamTwoTable+returnStatsPerPlayer(player,teamOneName.lower(),format)+"\n"
-	 	time.sleep(2)
+	try:
+		for player in teamOnePlayers:
+			teamOneTable=teamOneTable+returnStatsPerPlayer(player,teamTwoName.lower(),format)+"\n"
+			time.sleep(2)
+		for player in teamTwoPlayers:
+		 	teamTwoTable=teamTwoTable+returnStatsPerPlayer(player,teamOneName.lower(),format)+"\n"
+		 	time.sleep(2)
+	except:
+		sendEmail("Couldn't update match thread with lineup","Link to thread: "+str(submission.url))
+		return False,"Something went wrong while updating thread. Try doing it manually."
 	lineSplit=selfText.split("***")
 	teamInfo=lineSplit[2]
 	teamOneTable="\n\n"+teamOneTable+"\n"
 	teamTwoTable="\n\n"+teamTwoTable+"\n"
 	selfText=selfText.replace(selfText.split("***")[2],teamOneTable)
 	selfText=selfText.replace(selfText.split("***")[3],teamTwoTable)
-	print selfText
+	html_parser = HTMLParser.HTMLParser()
+	selfText = html_parser.unescape(selfText)
+	submission.edit(selfText)
+	return true,"Worked"
 
 def returnStatsPerPlayer(player,oppositionTeamName,format):
 	playerId=re.findall('\d+\.html', player)[0]
