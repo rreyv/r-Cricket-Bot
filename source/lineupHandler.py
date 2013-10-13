@@ -6,24 +6,50 @@ from requests.exceptions import HTTPError
 from praw.errors import ExceptionList, APIException, InvalidCaptcha, InvalidUser, RateLimitExceeded
 import sqlite3 as sql
 from emailGlobals import sendEmail
-from getMatchInfo import returnSoup
+from getMatchInfo import returnSoup,getTeamLineup
 from liveScoreHandler import getArrayOfCurrentlyRunningFixtures
 import re
 
 def updateLineups(r):
 	ArrayOfCurrentlyRunningFixtures = getArrayOfCurrentlyRunningFixtures()
+	alreadyUpdatedThreads = getAlreadyUpdatedThreads()
 	if not ArrayOfCurrentlyRunningFixtures:
 		return
 	for runningFixture in ArrayOfCurrentlyRunningFixtures:
 		matchThreadLink = runningFixture[0]
-		liveThreadLink = runningFixture[1]
-		updateLineUpPerThread(matchThreadId)
+		if alreadyUpdatedThreads.count(matchThreadLink)<1:
+			updateLineupPerThread(r,matchThreadLink)
 	#figure out matches you need to update the lineup for
-		
-		pass
 
-def updateLineupPerThread(matchThreadId):
-	submission = r.get_submission(matchThreadId)
+
+def alreadyUpdatedThreads():
+	updatedThreads=[]
+	text_file = open("updatedThreads.txt")
+	'''Create list of users'''
+	for line in text_file:
+		if line!="":
+			updatedThreads.append(line.strip())
+	text_file.close()
+	return updatedThreads
+
+
+def updateLineupPerThread(r,matchThreadLink):
+
+	updatedThreads=[]
+	text_file = open("updatedThreads.txt")
+	for line in text_file:
+		# if line!="":
+		updatedThreads.append(line.strip().lower())
+	text_file.close()
+	if updatedThreads.count(matchThreadLink)<1:
+		updatedThreads.append(matchThreadLink)
+	text_file=open('updatedThreads.txt', 'w')
+	for line in updatedThreads:
+		if line!="":
+			print>>text_file, line
+	text_file.close()
+
+	submission = r.get_submission(matchThreadLink)
 	selfText = submission.selftext
 	teamOneName,teamOnePlayers=extractTeamInfo(selfText,1)
 	teamTwoName,teamTwoPlayers=extractTeamInfo(selfText,2)
@@ -60,6 +86,9 @@ def updateLineupPerThread(matchThreadId):
 	html_parser = HTMLParser.HTMLParser()
 	selfText = html_parser.unescape(selfText)
 	submission.edit(selfText)
+
+
+
 	return true,"Worked"
 
 def returnStatsPerPlayer(player,oppositionTeamName,format):
