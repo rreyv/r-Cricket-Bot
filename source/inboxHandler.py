@@ -160,7 +160,7 @@ def UpdateThread(r,message):
 		html_parser = HTMLParser.HTMLParser()
 		selfText = html_parser.unescape(selfText)
 		submission.edit(selfText)
-		returnText="Match thread has been updated."
+		returnText="[Match thread](" + str(submission.url) + ") has been updated."
 		return returnText
 	else:
 		returnText="Sorry, only moderator approved users can update match threads. Please contact the moderators of /r/cricket to get approved."
