@@ -31,7 +31,7 @@ if __name__=="__main__":
 		while True:
 			#things that happen every 50 seconds
 			updateLiveScores(r)
-			updateLineups(r)
+			#updateLineups(r)
 			updateSidebar(fixturesData,r,subredditName)
 			readInbox(r,subredditName)
 			time.sleep(50)
