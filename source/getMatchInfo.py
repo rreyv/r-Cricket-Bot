@@ -6,7 +6,7 @@ def getMatchInfoWrapper(cricinfoLiveLink):
     # get the scorecard link from the cricinfo live link
     scorecardLink = getScorecardLink(cricinfoLiveLink)
     if scorecardLink == "Match Over":
-        return False, "Couldn't create match thread. Possible reasons are:\n\n* The match is over.\n* The match is not close to starting (i.e., live thread page is missing lots of data).\n* You did not send me the right link. The line must be the live thread link that you get from the fixtures page in Cricinfo."
+        return False, "Couldn't create match thread. Possible reasons are:\n\n* The match is over.\n* The match is not close to starting (i.e., live thread page is missing lots of data).\n* You did not send me the right link. The link must be the live thread link that you get from the fixtures page in Cricinfo."
     else:
         matchInfo = {}
         # get the soup from the scorecard link
@@ -86,7 +86,13 @@ def getMatchDay(soup, multipleDays):
 
 def getTeamLineup(soup):
     teamsList = {}
+    numberOfInningsBat0 = len(soup.find_all(id="inningsBat0"))
+    if numberOfInningsBat0>1:
+        teamsList = getAnnouncedTeams(soup)
+        return teamsList
+
     inningsBat1 = soup.find(id="inningsBat1")
+
     if not inningsBat1:
         teamsList = getSquad(soup)  # match hasn't begun, return squad
         return teamsList
@@ -105,6 +111,25 @@ def getTeamLineup(soup):
         teamsList['team1players'] = teamsList1['teamplayers']
         teamsList['team2players'] = teamsList2['teamplayers']
         return teamsList
+
+
+def getAnnouncedTeams(soup):
+    i = 1
+    teamsList = {}
+    for team in soup.find_all(class_="inningsBat0"):
+        if not team:
+            #Should never happen as we're checking if battingClass exists right before this function call
+            print "Can't find team information."
+            return ""
+        teamName = team.find(class_="inningsHead").find(
+            "td").find_next_sibling().get_text()
+        teamName = extractTeamName(teamName)
+        teamsList['team' + str(i) + 'name'] = teamName
+        teamsList['team' + str(i) + 'players'] = []
+        teamsList['team' + str(i) + 'players'].extend(getPlayingBatsmen(team))
+        teamsList['team' + str(i) + 'players'].extend(getDidNotBatBatsmen(team))
+        i=i+1
+    return teamsList
 
 
 def getSquad(soup):

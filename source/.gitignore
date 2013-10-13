@@ -1,14 +1,8 @@
-
 backups/ApprovedUpdaters.txt
 backups/rCricket.db
 backups/sidebar.txt
-createMatchThread.pyc
-createSidebar.pyc
-emailGlobals.pyc
-getFixturesInfo.pyc
-getMatchInfo.pyc
-inboxHandler.pyc
+*.pyc
 emailGlobals.py
 rCricket.db
 ApprovedUpdaters.txt
-liveScoreHandler.pyc
+emailGlobals.py
