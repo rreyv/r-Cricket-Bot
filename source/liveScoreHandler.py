@@ -1,8 +1,6 @@
 import praw
 import datetime
 import time
-from requests.exceptions import HTTPError
-from praw.errors import ExceptionList, APIException, InvalidCaptcha, InvalidUser, RateLimitExceeded
 import sqlite3 as sql
 from bs4 import BeautifulSoup
 from emailGlobals import sendEmail
@@ -32,7 +30,7 @@ def getArrayOfCurrentlyRunningFixtures():
 	return data
 
 def matchScoreUpdater(r,liveThreadLink,matchThreadLink):
-	#liveThreadLink='http://www.espncricinfo.com/bangladesh-v-new-zealand-2013-14/engine/match/668949.html'
+	#liveThreadLink='http://www.espncricinfo.com/india-v-australia-2013-14/engine/current/match/647249.html'
 	iFrameLink=getiFrameLink(liveThreadLink)
 	liveScoreText=getLiveScoreText(iFrameLink)
 	updateMatchThread(r,matchThreadLink,liveScoreText)
@@ -82,11 +80,11 @@ def HTMLTableToPythonTable(Table):
 	return returnText
 
 # if __name__=="__main__":
-# 	#matchScoreUpdater(1,2,3,4)
-# 	#getArrayOfCurrentlyRunningFixtures()
-# 	r = praw.Reddit('/r/rreyv live score updater test by /u/rreyv. Version 1.0') #reddit stuff
-# 	subredditName='cricket'
-# 	r.login() #sign in!
-# 	while True:
-# 		updateLiveScores(r)
-# 		time.sleep(50)
+#  	matchScoreUpdater(1,2,3)
+#  	#getArrayOfCurrentlyRunningFixtures()
+#  	#r = praw.Reddit('/r/rreyv live score updater test by /u/rreyv. Version 1.0') #reddit stuff
+#  	#subredditName='cricket'
+#  	#r.login() #sign in!
+#  	#while True:
+#  	#	updateLiveScores(r)
+#  	#	time.sleep(50)
