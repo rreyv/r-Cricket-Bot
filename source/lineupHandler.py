@@ -9,6 +9,7 @@ from emailGlobals import sendEmail
 from getMatchInfo import returnSoup,getTeamLineup
 from liveScoreHandler import getArrayOfCurrentlyRunningFixtures
 import re
+import HTMLParser
 
 def updateLineups(r):
 	ArrayOfCurrentlyRunningFixtures = getArrayOfCurrentlyRunningFixtures()
@@ -22,7 +23,7 @@ def updateLineups(r):
 	#figure out matches you need to update the lineup for
 
 
-def alreadyUpdatedThreads():
+def getAlreadyUpdatedThreads():
 	updatedThreads=[]
 	text_file = open("updatedThreads.txt")
 	'''Create list of users'''
@@ -63,6 +64,9 @@ def updateLineupPerThread(r,matchThreadLink):
 	else:
 		return False,"Couldn't figure out the format."
 
+	teamOneName=teamOneName.replace(" squad","")
+	teamTwoName=teamTwoName.replace(" squad","")
+
 	teamOneTable=teamOneName+"|M|R|HS|Avg|100|Wkt|BBI|Bowl Av.|5|Ct|St|"+"(v. )"+teamTwoName+"|M|R|HS|Avg|100|Wkt|BBI|Bowl Av.|5|Ct|St|\n"
 	teamOneTable=teamOneTable+"|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|\n"
 	teamTwoTable=teamTwoName+"|M|R|HS|Avg|100|Wkt|BBI|Bowl Av.|5|Ct|St|"+"(v. )"+teamOneName+"|M|R|HS|Avg|100|Wkt|BBI|Bowl Av.|5|Ct|St|\n"
@@ -86,10 +90,7 @@ def updateLineupPerThread(r,matchThreadLink):
 	html_parser = HTMLParser.HTMLParser()
 	selfText = html_parser.unescape(selfText)
 	submission.edit(selfText)
-
-
-
-	return true,"Worked"
+	return True,"Worked"
 
 def returnStatsPerPlayer(player,oppositionTeamName,format):
 	playerId=re.findall('\d+\.html', player)[0]
@@ -151,9 +152,18 @@ def extractTeamInfo(selftext,teamNumber):
 	#teamOneName=getTeamName(selftext)
 
 if __name__=="__main__":
-	#returnStatsPerPlayer(35320,'Bangladesh','odis')
-	r = praw.Reddit('/r/cricket testing things by /u/rreyv. Version 1.0') #reddit stuff
-	r.login()
-	matchThreadLink='http://www.reddit.com/r/rreyv/comments/1o9xe8/match_thread_bangladesh_v_new_zealand_at/'
-	#extractTeamInfo(selfText,1)
-	updateLineupPerThread(matchThreadLink)
+	# #returnStatsPerPlayer(35320,'Bangladesh','odis')
+	# r = praw.Reddit('/r/cricket testing things by /u/rreyv. Version 1.0') #reddit stuff
+	# r.login()
+	# matchThreadLink='http://www.reddit.com/r/rreyv/comments/1o9xe8/match_thread_bangladesh_v_new_zealand_at/'
+	# #extractTeamInfo(selfText,1)
+	# updateLineupPerThread(matchThreadLink)
+	ArrayOfCurrentlyRunningFixtures = getArrayOfCurrentlyRunningFixtures()
+	alreadyUpdatedThreads = getAlreadyUpdatedThreads()
+	#print alreadyUpdatedThreads
+	for runningFixture in ArrayOfCurrentlyRunningFixtures:
+		matchThreadLink = runningFixture[0]
+		if alreadyUpdatedThreads.count(matchThreadLink.strip())<1:
+			print matchThreadLink + "not present"
+		else:
+			print matchThreadLink + "yes present"

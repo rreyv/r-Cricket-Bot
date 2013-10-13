@@ -61,7 +61,6 @@ def getLiveScoreText(iFrameLink):
 	finalReturnText=returnText[1][:index]+"\n|:---|:---|:---|:---|:---|"+returnText[1][index:]
 	finalReturnText=finalReturnText + returnText[2]
 	finalReturnText=finalReturnText+"***"
-	print finalReturnText
 	return finalReturnText
 
 def HTMLTableToPythonTable(Table):
@@ -71,7 +70,10 @@ def HTMLTableToPythonTable(Table):
 			returnText[1]=returnText[1]+"\n"
 			returnText[1]=returnText[1]+"|"
 			for TableData in TableRow.find_all("td"):
-				returnText[1]=returnText[1]+TableData.string+"|"
+				if TableData.string:
+					returnText[1]=returnText[1]+TableData.string+"|"
+				else:
+					returnText[1]=returnText[1]+" |"
 	for TableRow in Table.find_all("tr"):
 		if len(TableRow.find_all("td"))==1:
 			TableData=TableRow.find("td")

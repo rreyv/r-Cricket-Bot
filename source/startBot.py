@@ -17,8 +17,8 @@ from lineupHandler import updateLineups
 
 if __name__=="__main__":
 	#One time setup
-	r = praw.Reddit('/r/cricket sidebar updating and match thread creating bot by /u/rreyv. Version 1.0') #reddit stuff
-	subredditName='rreyv'
+	r = praw.Reddit('/r/cricket sidebar updating and match thread creating bot by /u/rreyv. This does match updates every minute. Version 2.0') #reddit stuff
+	subredditName='cricket'
 	r.login() #sign in!
 	fixturesData={}
 	fixturesData=getFixturesDictionary(5)
