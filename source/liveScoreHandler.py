@@ -16,7 +16,11 @@ def updateLiveScores(r):
 	for runningFixture in ArrayOfCurrentlyRunningFixtures:
 		matchThreadLink = runningFixture[0]
 		liveThreadLink = runningFixture[1]
-		matchScoreUpdater(r,liveThreadLink,matchThreadLink)
+		try:
+			matchScoreUpdater(r,liveThreadLink,matchThreadLink)
+		except:
+			sendEmail("Couldn't update live score","Quitting this loop, will try again next loop.")
+			return
 
 
 def getArrayOfCurrentlyRunningFixtures():
@@ -24,13 +28,12 @@ def getArrayOfCurrentlyRunningFixtures():
 	con = sql.connect('rCricket.db',detect_types=sql.PARSE_COLNAMES)
 	cur = con.cursor()
 	currentGMT=datetime.datetime.utcnow()
-	TwelveHoursAgo=currentGMT - datetime.timedelta(0,0,0,0,0,12)
+	TwelveHoursAgo=currentGMT - datetime.timedelta(0,0,0,0,0,10)
 	cur.execute("select matchThreadLink,liveThreadLink from MatchThreads where creationTime between ? and ?",(TwelveHoursAgo,currentGMT))
 	data=cur.fetchall()
 	return data
 
 def matchScoreUpdater(r,liveThreadLink,matchThreadLink):
-	#liveThreadLink='http://www.espncricinfo.com/india-v-australia-2013-14/engine/current/match/647249.html'
 	iFrameLink=getiFrameLink(liveThreadLink)
 	liveScoreText=getLiveScoreText(iFrameLink)
 	updateMatchThread(r,matchThreadLink,liveScoreText)
@@ -78,13 +81,3 @@ def HTMLTableToPythonTable(Table):
 			if TableData.string:
 				returnText[2]=returnText[2]+TableData.string+"\n\n"
 	return returnText
-
-# if __name__=="__main__":
-#  	matchScoreUpdater(1,2,3)
-#  	#getArrayOfCurrentlyRunningFixtures()
-#  	#r = praw.Reddit('/r/rreyv live score updater test by /u/rreyv. Version 1.0') #reddit stuff
-#  	#subredditName='cricket'
-#  	#r.login() #sign in!
-#  	#while True:
-#  	#	updateLiveScores(r)
-#  	#	time.sleep(50)
