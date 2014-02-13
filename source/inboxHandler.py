@@ -36,7 +36,8 @@ def readInbox(r,subreddit):
 					else:
 						replyText="Only moderators can use this command."
 				elif msgSubject.lower()=="create thread":
-					replyText=CreateThread(r,message,subreddit)
+					#replyText=CreateThread(r,message,subreddit)
+					replyText="Creating threads on demand has been disabled until the bot becomes smart enough to understand the new Cricinfo format. Please create one manually by starting the thread title with 'Match thread:'"
 				elif ((msgSubject.find('reddit.com')!=-1) or (msgSubject.find('redd.it')!=-1)):
 					replyText=UpdateThread(r,message)
 				else:
