@@ -74,10 +74,10 @@ def createMatchThreadWrapper(r,threadTitle,liveThreadURL,source,subreddit):
     #At this line, the request to create the thread is either automated, or it's a match containing shitty teams
     threadText = "###" + threadTitle + "\n\n"
     threadText = threadText + "[Link to Cricinfo Live Commentary](" + liveThreadURL + ")" + " | Sort this thread by new posts | Reddit-Stream link for this thread" + "\n\n" + "***" + "\n\n"
-    threadText = threadText + getMainThreadInformation(matchInfo)
+    #threadText = threadText + getMainThreadInformation(matchInfo)
     # other match related information
-    threadText = threadText + "\n\n" + "*Series links:* " + \
-        "\n\n" + matchInfo['otherInfo'] + "\n\n" + "***" +"\n\n"
+    #threadText = threadText + "\n\n" + "*Series links:* " + \
+    #    "\n\n" + matchInfo['otherInfo'] + "\n\n" + "***" +"\n\n"
     threadText = threadText + getGeneralRedditStuff(source)
     html_parser = HTMLParser.HTMLParser()
     threadText = html_parser.unescape(threadText)
