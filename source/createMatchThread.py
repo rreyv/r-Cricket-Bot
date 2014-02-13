@@ -53,18 +53,18 @@ def getStreamInformation():
 
 
 def createMatchThreadWrapper(r,threadTitle,liveThreadURL,source,subreddit):
-    RealLink,matchInfo = getMatchInfoWrapper(liveThreadURL)
-    if not RealLink:
-        return [False,matchInfo]
+    #RealLink,matchInfo = getMatchInfoWrapper(liveThreadURL)
+    #if not RealLink:
+    #    return [False,matchInfo]
     # At this point, we have a cricinfo live thread link
 
-    if not threadTitle:
-        threadTitle = matchInfo['title']
+    #if not threadTitle:
+    #    threadTitle = matchInfo['title']
 
     #If it's a test playing nation, tell them that the thread will be created automatically.
 
-    if ( source!='rCricketBot' and (WeCareAbout(matchInfo['teamInfo']['team1name']) or WeCareAbout(matchInfo['teamInfo']['team2name']))):
-        return [False,"Match thread creation request denied. \n\nAt least one of the teams has test status. A match thread will be created automatically approximately one hour before the game. If a thread hasn't been created please message /u/rreyv"]
+    #if ( source!='rCricketBot' and (WeCareAbout(matchInfo['teamInfo']['team1name']) or WeCareAbout(matchInfo['teamInfo']['team2name']))):
+    #    return [False,"Match thread creation request denied. \n\nAt least one of the teams has test status. A match thread will be created automatically approximately one hour before the game. If a thread hasn't been created please message /u/rreyv"]
 
     #If it's not a test playing nation, see if a thread already exists
     [alreadyExists, replyLink]=HasThreadBeenCreated(liveThreadURL)
