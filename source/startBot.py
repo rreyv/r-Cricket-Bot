@@ -13,6 +13,7 @@ from emailGlobals import sendEmail
 from inboxHandler import readInbox
 from liveScoreHandler import updateLiveScores
 from lineupHandler import updateLineups
+from OrangeRed import OrangeRed
 
 
 if __name__=="__main__":
@@ -20,6 +21,8 @@ if __name__=="__main__":
 	r = praw.Reddit('/r/cricket sidebar updating and match thread creating bot by /u/rreyv. This does match updates every minute. Version 2.0') #reddit stuff
 	subredditName='cricket'
 	r.login() #sign in!
+	MTB = praw.Reddit('MegaThreadBot by /u/rreyv. Checkout https://bitbucket.org/rreyv/megathreadbot for details. Currently only live on /r/india. Version 1.0')
+	MTB.login()
 	fixturesData={}
 	fixturesData=getFixturesDictionary(5)
 	sendEmail("Bot has begun","Yep it has")
@@ -34,6 +37,7 @@ if __name__=="__main__":
 			#updateLineups(r)
 			updateSidebar(fixturesData,r,subredditName)
 			readInbox(r,subredditName)
+			OrangeRed(MTB)
 			time.sleep(50)
 			i+=1;
 			if i%240==0:

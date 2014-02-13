@@ -9,7 +9,7 @@ create a new match thread before the match starts
 ################################################################################
 import urllib2
 from bs4 import BeautifulSoup 
-from datetime import datetime
+from datetime import datetime,timedelta
 from getMatchInfo import returnSoup
 
 ################################################################################
@@ -133,6 +133,9 @@ def getTeamAbv(teamName):
 def getTime(timeString,Day):
     months=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     monthsNum=['1','2','3','4','5','6','7','8','9','10','11','12']
+    prevDay=False
+    if "(prev day)" in timeString:
+        prevDay=True
     GMT=timeString.split(" | ")[0]
     GMT=timeString.split(" ")[0]
     GMTHour=GMT.split(":")[0]
@@ -148,6 +151,8 @@ def getTime(timeString,Day):
     else:
         GMTYear=datetime.now().year
     MatchGMT=datetime.strptime(str(GMTYear) + " " + str(GMTMonth) + " "+GMTDay + " "+ GMTHour + " " + GMTMinutes,"%Y %m %d %H %M")
+    if prevDay:
+        MatchGMT=MatchGMT-timedelta(days=1)
     return MatchGMT
 
 

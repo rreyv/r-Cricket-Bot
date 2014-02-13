@@ -1,0 +1,7 @@
+ApprovedUpdaters.txt
+source/emailGlobals.py
+*.pyc
+tests/sidebarSettings.py
+source/updatedThreads.txt
+source/MTBApprovedUpdaters.txt
+source/fileHandlingTest.py
