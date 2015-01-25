@@ -25,13 +25,13 @@ def getMatchInfoWrapper(cricinfoLiveLink):
 
 
 def getScorecardLink(cricinfoLiveLink):
-    soup = returnSoup(cricinfoLiveLink)
+    soup = returnSoup(cricinfoLiveLink + '?version=iframe')
     liveIFrame = soup.find(id="live_iframe")
     # Match is over, live scorecard doesn't exist, return Match Over
     if not liveIFrame:
         return "Match Over"
         #return cricinfoLiveLink  # for debugging purposes
-    return (cricinfoLiveLink + '?view=scorecard')
+    return (cricinfoLiveLink + '?version=iframe;view=scorecard')
 
 
 def getThreadTitle(soup, multipleDays):

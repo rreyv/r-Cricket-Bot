@@ -2,7 +2,7 @@ import praw
 from praw.errors import ExceptionList, APIException, InvalidCaptcha, InvalidUser, RateLimitExceeded
 from createMatchThread import createMatchThreadWrapper
 from getFixturesInfo import getFixturesDictionary
-from datetime import datetime
+from datetime import datetime,timedelta 
 import time
 import logging
 import HTMLParser
@@ -16,8 +16,11 @@ def MakeRedditTable(fixturesData,r,subreddit):
 	for i in fixturesData:
 		matchTime = fixturesData[i]['Time']	#get match time
 		currentGMT = datetime.utcnow()	#get UTC time
+               # if ((fixturesData[i]['TeamOne']=='Australia' and fixturesData[i]['TeamTwo']=='India') or (fixturesData[i]['TeamOne']=='India' and fixturesData[i]['TeamTwo']=='Australia')):
+               #     currentGMT = currentGMT + timedelta(hours=12)
+                
 		timeDifference = matchTime - currentGMT	#get time difference
-		DisplayText=fixturesData[i]['ColumnTitle']
+                DisplayText=fixturesData[i]['ColumnTitle']
 		if len(DisplayText)>30:
 			DisplayText=DisplayText.split(",")[0]
 		if (timeDifference.total_seconds()<=3600 and timeDifference.total_seconds()>=3400):

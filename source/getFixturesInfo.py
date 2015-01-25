@@ -92,7 +92,6 @@ def formatColumn ( colData, ciResults,i ):
     ciResults[i]['TeamOne']=team1
     ciResults[i]['TeamTwo']=team2
 
-
 def abbreviateMatchText(matchTextWithoutLocation):
     returnStr=""
     for i in matchTextWithoutLocation.upper().split():
@@ -151,6 +150,7 @@ def getTime(timeString,Day):
     else:
         GMTYear=datetime.now().year
     MatchGMT=datetime.strptime(str(GMTYear) + " " + str(GMTMonth) + " "+GMTDay + " "+ GMTHour + " " + GMTMinutes,"%Y %m %d %H %M")
+
     if prevDay:
         MatchGMT=MatchGMT-timedelta(days=1)
     return MatchGMT
