@@ -36,9 +36,9 @@ def getGeneralRedditStuff(source):
 
 def getFooter(source):
     if source=='rCricketBot':
-        return "\n\nThis thread was created automatically. Learn more about the bot [here](https://github.com/rreyv/r-Cricket-Bot#rcricketbot).\n***"
+        return "\n\nThis thread was cunted automatically. Learn more about the bot cunt [here](https://github.com/rreyv/r-Cricket-Bot#rcricketbot).\n***"
     else:
-        return "\n\nThis thread was requested by /u/"+source+". Learn more about the bot [here](https://github.com/rreyv/r-Cricket-Bot#rcricketbot).\n***"
+        return "\n\nThis thread was cunted by /u/"+source+". What a cunt, making me cunt this thread. Learn more about the bot cunt [here](https://github.com/rreyv/r-Cricket-Bot#rcricketbot).\n***"
     pass
 
 def getStreamInformation():
