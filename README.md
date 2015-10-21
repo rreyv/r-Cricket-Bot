@@ -1,7 +1,7 @@
 rCricketBot
 ===========
 
-###Retired. Do not use
+###Retired. Do not use Check out /rreyv/rcb instead.
 
 Does things for /r/cricket
 
