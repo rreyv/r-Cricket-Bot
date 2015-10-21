@@ -1,6 +1,8 @@
 rCricketBot
 ===========
 
+###Retired. Do not use
+
 Does things for /r/cricket
 
 !Important!
