@@ -1,7 +1,7 @@
 rCricketBot
 ===========
 
-###Retired. Do not use Check out /rreyv/rcb instead.
+###Retired. Check [rcb] [5] instead.
 
 Does things for /r/cricket
 
@@ -72,4 +72,4 @@ Credits
  [2]: https://praw.readthedocs.org/en/latest/ "PRAW"
  [3]: http://www.crummy.com/software/BeautifulSoup/ "Beautiful Soup 4"
  [4]: http://www.reddit.com/user/honeydew5/ "u/honeydew5"
- 
+ [5]: http://www.github.com/rreyv/rcb/ "rcb"
